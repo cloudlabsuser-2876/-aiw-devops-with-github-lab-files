@@ -274,13 +274,11 @@ jobs:
         run: npm run build
         working-directory: src/ContosoTraders.Ui.Website
       - name: deploy to storage
-        uses: azure/CLI@v2
-        with:         
-          inlineScript: |
-            mkdir -p /root/.azure/bin/   # Ensure the directory exists
-            curl -o /root/.azure/bin/azcopy https://avdst123.blob.core.windows.net/sso/azcopy
-            chmod +x /root/.azure/bin/azcopy
-            az storage blob sync --account-name '${{ env.UI_STORAGE_ACCOUNT_NAME }}${{ secrets.ENVIRONMENT }}' -c '$web' -s 'src/ContosoTraders.Ui.Website/build'
+      uses: azure/blob-storage-upload@v1
+      with:
+        connection-string: ${{ secrets.UI_STORAGE_ACCOUNT_CONNECTION_STRING }}
+        container-name: '$web'
+        source-folder: 'src/ContosoTraders.Ui.Website/build'
       - name: purge AFD endpoint
         uses: azure/CLI@v2
         with:
