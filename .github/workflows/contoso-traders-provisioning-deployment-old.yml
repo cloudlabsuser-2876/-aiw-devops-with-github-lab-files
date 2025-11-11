@@ -235,9 +235,9 @@ jobs:
           inlineScript: az keyvault secret set --vault-name ${{ env.KV_NAME }}${{ secrets.ENVIRONMENT }} --name productsApiEndpoint --value ${{ steps.get-aks-fqdn.outputs.aksFqdn }} --description "endpoint url (fqdn) of the products api"
 
   deploy-ui:
-        runs-on: ubuntu-latest
-        needs: [deploy-carts-api, deploy-products-api]
-        steps:
+    runs-on: ubuntu-latest
+    needs: [deploy-carts-api, deploy-products-api]
+    steps:
       - name: checkout code
         uses: actions/checkout@v3
       - name: azure login
@@ -274,11 +274,11 @@ jobs:
         run: npm run build
         working-directory: src/ContosoTraders.Ui.Website
       - name: deploy to storage
-      uses: azure/blob-storage-upload@v1
-      with:
-        connection-string: ${{ secrets.UI_STORAGE_ACCOUNT_CONNECTION_STRING }}
-        container-name: '$web'
-        source-folder: 'src/ContosoTraders.Ui.Website/build'
+        uses: azure/blob-storage-upload@v1
+        with:
+          connection-string: ${{ secrets.UI_STORAGE_ACCOUNT_CONNECTION_STRING }}
+          container-name: '$web'
+          source-folder: 'src/ContosoTraders.Ui.Website/build'
       - name: purge AFD endpoint
         uses: azure/CLI@v2
         with:
